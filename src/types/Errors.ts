@@ -1,4 +1,5 @@
 export enum ErrorMessage {
+  None = '',
   LoadTodoFailed = 'Unable to load todos',
   EmptyTitle = 'Title should not be empty',
   AddTodoFailed = 'Unable to add a todo',

@@ -12,15 +12,12 @@ export function getVisibleTodos(
     }
 
     switch (filter) {
-      case FilterStatus.All:
-        return true;
-
       case FilterStatus.Active:
         return !todo.completed;
-
       case FilterStatus.Completed:
         return todo.completed;
 
+      case FilterStatus.All:
       default:
         return true;
     }
