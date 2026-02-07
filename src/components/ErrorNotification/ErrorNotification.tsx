@@ -8,25 +8,28 @@ type Props = {
   handleErrorReset: () => void;
 };
 
-export const ErrorNotification: React.FC<Props> = ({
-  error,
-  handleErrorReset,
-}) => {
-  return (
-    <div
-      data-cy="ErrorNotification"
-      className={cn('notification is-danger is-light has-text-weight-normal', {
-        hidden: !error,
-      })}
-    >
-      <button
-        data-cy="HideErrorButton"
-        type="button"
-        className="delete"
-        onClick={() => handleErrorReset()}
-      />
-      {error}
-      <br />
-    </div>
-  );
-};
+export const ErrorNotification: React.FC<Props> = React.memo(
+  ({ error, handleErrorReset }) => {
+    return (
+      <div
+        data-cy="ErrorNotification"
+        className={cn(
+          'notification is-danger is-light has-text-weight-normal',
+          {
+            hidden: error === ErrorMessage.None,
+          },
+        )}
+      >
+        <button
+          data-cy="HideErrorButton"
+          type="button"
+          className="delete"
+          onClick={handleErrorReset}
+        />
+        {error}
+      </div>
+    );
+  },
+);
+
+ErrorNotification.displayName = 'ErrorNotification';

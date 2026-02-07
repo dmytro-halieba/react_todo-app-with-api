@@ -4,7 +4,7 @@ import cn from 'classnames';
 type Props = {
   haveTodos: boolean;
   isAllTodosCompleted: boolean;
-  loading: boolean;
+  isLoading: boolean;
   handleTodoToggleAll: () => void;
   handleCreateTodo: (event: React.FormEvent) => void;
   query: string;
@@ -15,7 +15,7 @@ type Props = {
 export const TodoHeader: React.FC<Props> = ({
   haveTodos,
   isAllTodosCompleted,
-  loading,
+  isLoading: loading,
   handleTodoToggleAll,
   handleCreateTodo,
   query,

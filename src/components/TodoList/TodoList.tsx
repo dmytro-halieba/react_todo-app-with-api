@@ -63,14 +63,6 @@ export const TodoList: React.FC<Props> = ({
           isLoadingTodo={true}
           isEditing={false}
           todo={tempTodo}
-          handleUpdateTodo={() => {}}
-          handleTodoEditing={() => {}}
-          editInputRef={editInputRef}
-          editedTodoTitle={tempTodo.title}
-          setEditedTodoTitle={() => {}}
-          handleKeyDown={() => {}}
-          setEditingTodoId={() => {}}
-          handleDeleteTodo={() => {}}
         />
       )}
     </section>

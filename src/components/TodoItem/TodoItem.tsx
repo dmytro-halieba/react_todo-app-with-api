@@ -8,29 +8,38 @@ type Props = {
   isLoadingTodo: boolean;
   isEditing: boolean;
   todo: Todo;
-  handleUpdateTodo: (originalTodo: Todo, updatedTodo: Todo) => void;
-  handleTodoEditing: (todo: Todo) => void;
-  editInputRef: React.RefObject<HTMLInputElement>;
-  editedTodoTitle: string;
-  setEditedTodoTitle: (value: string) => void;
-  handleKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  setEditingTodoId: (id: number | null) => void;
-  handleDeleteTodo: (id: number) => void;
+  handleUpdateTodo?: (originalTodo: Todo, updatedTodo: Todo) => void;
+  handleTodoEditing?: (todo: Todo) => void;
+  editInputRef?: React.RefObject<HTMLInputElement>;
+  editedTodoTitle?: string;
+  setEditedTodoTitle?: (value: string) => void;
+  handleKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  setEditingTodoId?: (id: number | null) => void;
+  handleDeleteTodo?: (id: number) => void;
 };
 
 export const TodoItem: React.FC<Props> = ({
   isLoadingTodo,
   isEditing,
   todo,
-  handleUpdateTodo,
-  handleTodoEditing,
+  handleUpdateTodo = () => {},
+  handleTodoEditing = () => {},
   editInputRef,
-  editedTodoTitle,
-  setEditedTodoTitle,
-  handleKeyDown,
-  setEditingTodoId,
-  handleDeleteTodo,
+  editedTodoTitle = '',
+  setEditedTodoTitle = () => {},
+  handleKeyDown = () => {},
+  setEditingTodoId = () => {},
+  handleDeleteTodo = () => {},
 }) => {
+  const handleToggleComplete = () => {
+    const updatedTodo = {
+      ...todo,
+      completed: !todo.completed,
+    };
+
+    handleUpdateTodo(todo, updatedTodo);
+  };
+
   return (
     <div data-cy="Todo" className={cn('todo', { completed: todo.completed })}>
       <label className="todo__status-label">
@@ -40,14 +49,7 @@ export const TodoItem: React.FC<Props> = ({
           className="todo__status"
           disabled={isLoadingTodo}
           checked={todo.completed}
-          onChange={() => {
-            const updatedTodo = {
-              ...todo,
-              completed: !todo.completed,
-            };
-
-            handleUpdateTodo(todo, updatedTodo);
-          }}
+          onChange={handleToggleComplete}
         />
       </label>
 

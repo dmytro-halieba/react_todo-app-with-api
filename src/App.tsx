@@ -17,7 +17,7 @@ import { TodoList } from './components/TodoList';
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<ErrorMessage>(ErrorMessage.None);
   const [filter, setFilter] = useState<FilterStatus>(FilterStatus.All);
   const [query, setQuery] = useState('');
@@ -29,8 +29,8 @@ export const App: React.FC = () => {
   const editInputRef = useRef<HTMLInputElement>(null);
 
   const haveTodos = todos.length > 0;
-  const activeTodosCount = todos.filter(t => !t.completed).length;
-  const completedTodosCount = todos.filter(t => t.completed).length;
+  const activeTodosCount = todos.filter(todo => !todo.completed).length;
+  const completedTodosCount = todos.filter(todo => todo.completed).length;
   const isAllTodosCompleted = todos.length === completedTodosCount;
 
   const handleErrorReset = useCallback(() => {
@@ -115,7 +115,7 @@ export const App: React.FC = () => {
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true);
 
     const newTempTodo: Todo = {
       id: 0,
@@ -136,13 +136,13 @@ export const App: React.FC = () => {
         handleError(ErrorMessage.AddTodoFailed);
       })
       .finally(() => {
-        setLoading(false);
+        setIsLoading(false);
         setTempTodo(null);
       });
   }
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     todoService
       .getTodos()
       .then(setTodos)
@@ -150,16 +150,16 @@ export const App: React.FC = () => {
         handleError(ErrorMessage.LoadTodoFailed);
       })
       .finally(() => {
-        setLoading(false);
+        setIsLoading(false);
         inputRef.current?.focus();
       });
   }, [handleError]);
 
   useEffect(() => {
-    if (!loading && !tempTodo && inputRef.current) {
+    if (!isLoading && !tempTodo && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [loading, tempTodo]);
+  }, [isLoading, tempTodo]);
 
   useEffect(() => {
     if (editingTodoId !== null && editInputRef.current) {
@@ -176,27 +176,20 @@ export const App: React.FC = () => {
   }
 
   function handleTodoToggleAll() {
-    if (isAllTodosCompleted) {
-      todos.forEach(currentTodo => {
-        const updatedTodo = {
-          ...currentTodo,
-          completed: false,
-        };
+    const todosToUpdate = isAllTodosCompleted
+      ? todos
+      : todos.filter(todo => !todo.completed);
 
-        handleUpdateTodo(currentTodo, updatedTodo);
-      });
-    } else {
-      const notCompletedTodos = todos.filter(todo => !todo.completed);
+    const newCompletedStatus = !isAllTodosCompleted;
 
-      notCompletedTodos.forEach(currentTodo => {
-        const updatedTodo = {
-          ...currentTodo,
-          completed: true,
-        };
+    todosToUpdate.forEach(currentTodo => {
+      const updatedTodo = {
+        ...currentTodo,
+        completed: newCompletedStatus,
+      };
 
-        handleUpdateTodo(currentTodo, updatedTodo);
-      });
-    }
+      handleUpdateTodo(currentTodo, updatedTodo);
+    });
   }
 
   function handleTodoEditing(todo: Todo) {
@@ -239,7 +232,7 @@ export const App: React.FC = () => {
         <TodoHeader
           haveTodos={haveTodos}
           isAllTodosCompleted={isAllTodosCompleted}
-          loading={loading}
+          isLoading={isLoading}
           handleTodoToggleAll={handleTodoToggleAll}
           handleCreateTodo={handleCreateTodo}
           query={query}
